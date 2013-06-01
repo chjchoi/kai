@@ -1,0 +1,5 @@
+::sysinit:/etc/rc
+#ttyS2::respawn:/bin/hush -i
+ttyS3::respawn:/bin/hush -i
+#ttyS4::respawn:/bin/hush -i
+#ttyS5::respawn:/bin/hush -i

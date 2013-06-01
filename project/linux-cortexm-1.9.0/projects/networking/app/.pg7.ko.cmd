@@ -1,0 +1,1 @@
+cmd_/home/choi/new_work/test1/projects/networking/app/pg7.ko := arm-uclinuxeabi-ld -EL -r  -T /home/choi/new_work/test1/linux/scripts/module-common.lds  -o /home/choi/new_work/test1/projects/networking/app/pg7.ko /home/choi/new_work/test1/projects/networking/app/pg7.o /home/choi/new_work/test1/projects/networking/app/pg7.mod.o

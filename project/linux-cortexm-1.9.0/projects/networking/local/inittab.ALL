@@ -1,0 +1,8 @@
+::sysinit:/etc/rc
+#ttyS0::respawn:/bin/hush -i
+S0:2345:respawn:/bin/hush ttyS3 115200,9600 linux
+#S1:2345:respawn:/bin/hush ttyS0 115200,9600 linux
+#S2:2345:respawn:/bin/hush ttyS2 115200,9600 linux
+#S3:2345:respawn:/bin/hush ttyS1 115200,9600 linux
+#S4:2345:respawn:/bin/hush ttyS4 115200,9600 linux
+#S5:2345:respawn:/bin/hush ttyS5 115200,9600 linux

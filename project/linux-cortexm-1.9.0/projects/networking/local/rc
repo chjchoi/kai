@@ -1,0 +1,24 @@
+#!/bin/sh
+mount -t proc proc /proc
+mount -t sysfs sysfs /sys
+mount -t devpts none /dev/pts
+#NOR
+mount -t jffs2 /dev/mtdblock3 /mnt
+busybox mknod /dev/status_gpio c 240 0
+busybox insmod /mnt/status_gpio.ko
+busybox mknod /dev/nor_led c 241 0
+busybox insmod /mnt/led.ko
+#mount -t jffs2 /dev/mtdblock2 /
+#chmod 777 /mnt/start.sh
+#chmod 777  start 
+#/mnt/start.sh
+#/start
+#NOR
+# To do NFS-mount of a development host directory for your project,
+# replace the IP and host directory in the line below with your
+# values matching your local settings
+# mount -o nolock,rsize=1024 172.17.0.1:/home/vlad/test/HEAD/projects /mnt
+ifconfig lo 127.0.0.1
+# ifconfig eth0 172.17.0.199
+
+
