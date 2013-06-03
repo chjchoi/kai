@@ -1,1 +1,0 @@
-cmd_/home/choi/new_work/test1/projects/networking/app/status_gpio.ko := arm-uclinuxeabi-ld -EL -r  -T /home/choi/new_work/test1/linux/scripts/module-common.lds  -o /home/choi/new_work/test1/projects/networking/app/status_gpio.ko /home/choi/new_work/test1/projects/networking/app/status_gpio.o /home/choi/new_work/test1/projects/networking/app/status_gpio.mod.o

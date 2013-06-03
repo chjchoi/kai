@@ -1,5 +1,0 @@
-#!/bin/sh
-cp *ko /pcShare
-cp dia tty /pcShare
-cp dia2 tty2 /pcShare
-

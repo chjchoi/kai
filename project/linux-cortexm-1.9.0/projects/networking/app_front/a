@@ -1,4 +1,0 @@
-#!/bin/sh
-cp *ko /pcShare
-cp diaX ttyX /pcShare
-

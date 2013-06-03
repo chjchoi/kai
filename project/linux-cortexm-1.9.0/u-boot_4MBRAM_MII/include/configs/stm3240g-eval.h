@@ -59,7 +59,7 @@
 /*
  * Monitor prompt
  */
-#define CONFIG_SYS_PROMPT		"NOR-DB_0.1_MII> "
+#define CONFIG_SYS_PROMPT		"NOR-4MB_0.1_MII> "
 
 /*
  * We want to call the CPU specific initialization
