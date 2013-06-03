@@ -27,9 +27,11 @@ dir /dev/pts 0755 0 0
 nod /dev/ptmx 0666 0 0 c 5 2
 
 nod /dev/ttyS0 0666 0 0 c 4 64
-nod /dev/ttyS1 0666 0 0 c 4 65
+#nod /dev/ttyS1 0666 0 0 c 4 65
 nod /dev/ttyS2 0666 0 0 c 4 66
 nod /dev/ttyS3 0666 0 0 c 4 67
+nod /dev/ttyS4 0666 0 0 c 4 68
+nod /dev/ttyS5 0666 0 0 c 4 69
 
 dir /root 0700 0 0
 dir /proc 0755 0 0

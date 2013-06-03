@@ -36,18 +36,11 @@
 #include <mach/stm32.h>
 
 //NOR
-
-struct stm32f2_gpio_dsc status_ind[9] = {
-                {STM32F2_GPIO_PORT_H,STM32F2_GPIO_PIN_8},
-                {STM32F2_GPIO_PORT_H,STM32F2_GPIO_PIN_9},
-                {STM32F2_GPIO_PORT_H,STM32F2_GPIO_PIN_10},
-                {STM32F2_GPIO_PORT_H,STM32F2_GPIO_PIN_11},
-                {STM32F2_GPIO_PORT_H,STM32F2_GPIO_PIN_12},
-                {STM32F2_GPIO_PORT_I,STM32F2_GPIO_PIN_0},
-                {STM32F2_GPIO_PORT_I,STM32F2_GPIO_PIN_1},
-                {STM32F2_GPIO_PORT_I,STM32F2_GPIO_PIN_2},
-                {STM32F2_GPIO_PORT_I,STM32F2_GPIO_PIN_3},
-};
+#define STATUS_GPIO_NUMBER 9
+int stm32f2_led_init(void);
+int stm32f2_tp_sync_ready_init(void);
+int stm32f2_usart_short_loopback_disable(void);
+int stm32f2_status_gpio_init(void);
 /*
  * Register map bases
  */
@@ -63,7 +56,7 @@ static const unsigned long io_base[] = {
 static const u32 af_val[] = {
 	STM32F2_GPIO_AF_USART1, STM32F2_GPIO_AF_USART2, STM32F2_GPIO_AF_USART3,
 	STM32F2_GPIO_AF_USART4, STM32F2_GPIO_AF_USART5, STM32F2_GPIO_AF_USART6,
-	STM32F2_GPIO_AF_MAC, STM32F2_GPIO_AF_SDIO,STM32F2_GPIO_AF_MC0,//NOR
+	STM32F2_GPIO_AF_MAC, STM32F2_GPIO_AF_SDIO,STM32F2_GPIO_AF_MC0,(unsigned int) -1,(unsigned int) -1,//NOR
 	0
 };
 
@@ -235,56 +228,6 @@ void __init stm32_iomux_init(void)
 		gpio_dsc.pin  = 11; //PC11
 		stm32f2_gpio_config(&gpio_dsc, STM32F2_GPIO_ROLE_USART4);
 #endif
-/*
-#if defined(CONFIG_STM32_USART1)
-		gpio_dsc.port = 0;
-		gpio_dsc.pin  = 9;//PA9
-		stm32f2_gpio_config(&gpio_dsc, STM32F2_GPIO_ROLE_USART1);
-
-		gpio_dsc.port = 0;
-		gpio_dsc.pin  = 10;//PA10
-		stm32f2_gpio_config(&gpio_dsc, STM32F2_GPIO_ROLE_USART1);
-#endif
-
-#if defined(CONFIG_STM32_USART3)
-		gpio_dsc.port = 1;// 2->1
-		gpio_dsc.pin  = 10;//PB10
-		stm32f2_gpio_config(&gpio_dsc, STM32F2_GPIO_ROLE_USART3);
-
-		gpio_dsc.port = 1; // 2->1
-		gpio_dsc.pin  = 11; //PB11
-		stm32f2_gpio_config(&gpio_dsc, STM32F2_GPIO_ROLE_USART3);
-#endif
-
-#if defined(CONFIG_STM32_USART4)
-		gpio_dsc.port = 2;
-		gpio_dsc.pin  = 10; //PC10
-		stm32f2_gpio_config(&gpio_dsc, STM32F2_GPIO_ROLE_USART4);
-
-		gpio_dsc.port = 2; 
-		gpio_dsc.pin  = 11;//PC11
-		stm32f2_gpio_config(&gpio_dsc, STM32F2_GPIO_ROLE_USART4);
-#endif
-
-#if defined(CONFIG_STM32_USART5)
-		gpio_dsc.port = 2;
-		gpio_dsc.pin  = 12; //PC12
-		stm32f2_gpio_config(&gpio_dsc, STM32F2_GPIO_ROLE_USART5);
-
-		gpio_dsc.port = 3;
-		gpio_dsc.pin  = 2; //PD2
-		stm32f2_gpio_config(&gpio_dsc, STM32F2_GPIO_ROLE_USART5);
-#endif
-#if defined(CONFIG_STM32_USART6)
-		gpio_dsc.port = 2;
-		gpio_dsc.pin  = 6;//PC6
-		stm32f2_gpio_config(&gpio_dsc, STM32F2_GPIO_ROLE_USART6);
-
-		gpio_dsc.port = 2;
-		gpio_dsc.pin  = 7;//PC7
-		stm32f2_gpio_config(&gpio_dsc, STM32F2_GPIO_ROLE_USART6);
-#endif
-*/
 
 //		
 #if defined(CONFIG_STM32_MAC)
@@ -310,7 +253,8 @@ void __init stm32_iomux_init(void)
 			static struct stm32f2_gpio_dsc sdcard_gpio[] = {
 				{2,  8}, {2,  9}, {2, 10}, {2, 11},
 				{2, 12}, {3,  2}
-			};
+	struct stm32f2_gpio_dsc pg7={6,7};
+	};
 			int	i;
 
 			for (i = 0; i < ARRAY_SIZE(sdcard_gpio); i++) {
@@ -339,22 +283,50 @@ void __init stm32_iomux_init(void)
 		break;
 	}
 //NOR
-	stm32_led_init();	
+	stm32f2_led_init();	
 	stm32f2_status_gpio_init();
+	stm32f2_usart_short_loopback_disable();
+	stm32f2_tp_sync_ready_init();
 }
 //NOR
 //------------------------------------------------------
-int stm32f2_status_gpio_init(void)
+int stm32f2_tp_sync_ready_init(void)
 {
-		int i;
-		int rv=0;
-//NOR
+			
+		struct stm32f2_gpio_dsc tp_sync={8,7};	
+		struct stm32f2_gpio_dsc tp_ready={8,6};	
+		stm32f2_gpio_config(&tp_sync,STM32F2_GPIO_ROLE_GPOUT);
+		stm32f2_gpio_config(&tp_ready,STM32F2_GPIO_ROLE_GPOUT);
+		stm32f2_gpout_set(&tp_sync,1);
+		stm32f2_gpout_set(&tp_ready,1);
+		return 0;
+}
+
+int stm32f2_usart_short_loopback_disable(void)
+{
+			
 		struct stm32f2_gpio_dsc pg7={6,7};	
 		stm32f2_gpio_config(&pg7,STM32F2_GPIO_ROLE_GPOUT);
 		stm32f2_gpout_set(&pg7,1);
+		return 0;
+}
+int stm32f2_status_gpio_init(void)
+{
+		struct stm32f2_gpio_dsc status_ind[STATUS_GPIO_NUMBER] = {
+                {STM32F2_GPIO_PORT_H,STM32F2_GPIO_PIN_8},
+                {STM32F2_GPIO_PORT_H,STM32F2_GPIO_PIN_9},
+                {STM32F2_GPIO_PORT_H,STM32F2_GPIO_PIN_10},
+                {STM32F2_GPIO_PORT_H,STM32F2_GPIO_PIN_11},
+                {STM32F2_GPIO_PORT_H,STM32F2_GPIO_PIN_12},
+                {STM32F2_GPIO_PORT_I,STM32F2_GPIO_PIN_0},
+                {STM32F2_GPIO_PORT_I,STM32F2_GPIO_PIN_1},
+              //  {STM32F2_GPIO_PORT_I,STM32F2_GPIO_PIN_2},
+              //  {STM32F2_GPIO_PORT_I,STM32F2_GPIO_PIN_3},
+		};
+		int i;
+		int rv=0;
 
-//
-		for(i=0;i<9;++i)
+		for(i=0;i<STATUS_GPIO_NUMBER;++i)
 		{
 			rv = stm32f2_gpio_config(&status_ind[i],STM32F2_GPIO_ROLE_GPIN);
 			if(rv)
@@ -374,12 +346,13 @@ int stm32f2_status_gpio_init(void)
 		return 0;
 }
 //-----------------------------------------------------
-void stm32_led_init(void)
+int stm32f2_led_init(void)
 {
 	struct stm32f2_gpio_dsc led1={5,10};//PF10
 	struct stm32f2_gpio_dsc led2={8,4};//PI4
 	stm32f2_gpio_config(&led1,STM32F2_GPIO_ROLE_GPOUT);
 	stm32f2_gpio_config(&led2,STM32F2_GPIO_ROLE_GPOUT);
+	return 0;
 }
 
 //------------------------------------------------------

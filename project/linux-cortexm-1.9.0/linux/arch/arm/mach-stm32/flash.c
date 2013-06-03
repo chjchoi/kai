@@ -93,14 +93,8 @@ static struct mtd_partition flash_partitions[] = {
 	{
 		.name	= "flash_jffs2",
 		.offset = 0x300000,//FLASH_JFFS2_OFFSET,
-	//	.size   = 0xD00000,
-		.size   = 0x500000,
+		.size   = 0xD00000,
 	},
-	{
-		.name   = "working space",
-		.offset = 0x800000,
-		.size   = 0x800000,
-	}
 };
 static struct physmap_flash_data flash_data = {
 	.width		= 2,

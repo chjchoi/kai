@@ -41,30 +41,28 @@ int main(int argc,char** argv){
 		cfsetispeed(&term,B115200);
 		tcsetattr(MODEMFD,TCSANOW,&term);
 	}	
+	else if(argv[1][0]=='5')
+	{
+		MODEMFD = open("/dev/ttyS4",O_RDONLY);
+		cfsetispeed(&term,B115200);
+		tcsetattr(MODEMFD,TCSANOW,&term);
+	}
+	else if(argv[1][0]=='6')
+	{
+		MODEMFD = open("/dev/ttyS5",O_RDONLY);
+		cfsetispeed(&term,B115200);
+		tcsetattr(MODEMFD,TCSANOW,&term);
+	}
 	else
 	{
 		printf("wrong number");
 		return -100;
 	}	
 	if((MODEMFD < 0)){
-		if(argv[1][0]=='1')
-		{	
-			printf("%s:open error\n","ttyS0");
-		}
-		else
-		{
-			printf("%s:open error\n","ttyS2");
-		}
+		printf("%s%c:open error\n","ttyS",argv[1][0]-1);
 		return -1;
 	}
-	if(argv[1][0]=='1')
-	{
-		printf("%s:open success!\n", "ttyS0");
-	}
-	else
-	{
-		printf("%s:open success!\n","ttyS2");
-	}
+	printf("%s%c:open success!\n", "ttyS",argv[1][0]-1);
 	
 	r_cnt = 0;
         
@@ -72,16 +70,8 @@ int main(int argc,char** argv){
 		r_cnt = read(MODEMFD, chrs, 1);
 		if(r_cnt>=1)
 		{
-			if(argv[1][0]=='1')
-			{
-				printf("ttyS0:%02x\n",chrs[0]);
-			}
-			else
-			{
-				printf("tty$2:%02x\n",chrs[0]);
-			}
+			printf("%02x\n",chrs[0]);
 		}
-		ccc=0;
 	}
 	
 	return 0;

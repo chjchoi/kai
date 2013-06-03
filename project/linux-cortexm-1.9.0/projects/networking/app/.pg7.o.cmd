@@ -1,1 +1,0 @@
-cmd_/home/choi/new_work/test1/projects/networking/app/pg7.o := arm-uclinuxeabi-ld -EL    -r -o /home/choi/new_work/test1/projects/networking/app/pg7.o /home/choi/new_work/test1/projects/networking/app/stm32f2_gpio.o 

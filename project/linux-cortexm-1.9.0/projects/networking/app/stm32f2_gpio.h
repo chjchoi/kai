@@ -12,6 +12,13 @@
 #define STM32F2_GPIOG_BASE	(STM32_AHB1PERITH_BASE + 0x1800)
 #define STM32F2_GPIOH_BASE	(STM32_AHB1PERITH_BASE + 0x1C00)
 #define STM32F2_GPIOI_BASE	(STM32_AHB1PERITH_BASE + 0x2000)
+#ifdef CONFIG_ARCH_STM32F1
+#define STM32_RCC_BASE		(STM32_AHB1PERITH_BASE + 0x1000) /* STM32F1 */
+#else
+#define STM32_RCC_BASE		(STM32_AHB1PERITH_BASE + 0x3800) /* STM32F2 */
+#endif
+#define STM32_RCC	((volatile struct stm32_rcc_regs *)STM32_RCC_BASE)
+
 
 /*
  * GPIO configuration mode
@@ -71,16 +78,16 @@
  * GPIO register map
  */
 struct stm32f2_gpio_regs {
-	u32	moder;		/* GPIO port mode			      */
-	u32	otyper;		/* GPIO port output type		      */
-	u32	ospeedr;	/* GPIO port output speed		      */
-	u32	pupdr;		/* GPIO port pull-up/pull-down		      */
-	u32	idr;		/* GPIO port input data			      */
-	u32	odr;		/* GPIO port output data		      */
-	u16	bsrrl;		/* GPIO port bit set/reset low		      */
-	u16	bsrrh;		/* GPIO port bit set/reset high		      */
-	u32	lckr;		/* GPIO port configuration lock		      */
-	u32	afr[2];		/* GPIO alternate function		      */
+	unsigned int	moder;		/* GPIO port mode			      */
+	unsigned int	otyper;		/* GPIO port output type		      */
+	unsigned int	ospeedr;	/* GPIO port output speed		      */
+	unsigned int	pupdr;		/* GPIO port pull-up/pull-down		      */
+	unsigned int	idr;		/* GPIO port input data			      */
+	unsigned int	odr;		/* GPIO port output data		      */
+	unsigned short	bsrrl;		/* GPIO port bit set/reset low		      */
+	unsigned short	bsrrh;		/* GPIO port bit set/reset high		      */
+	unsigned int	lckr;		/* GPIO port configuration lock		      */
+	unsigned int	afr[2];		/* GPIO alternate function		      */
 };
 /*
  * GPIO ports
@@ -137,22 +144,83 @@ enum stm32f2_gpio_role {
 	
 };
 
+//
+/*
+ * RCC register map
+ */
+struct stm32_rcc_regs {
+	unsigned int	cr;		/* RCC clock control			      */
+#ifndef CONFIG_ARCH_STM32F1
+	unsigned int	pllcfgr;	/* RCC PLL configuration		      */
+#endif
+	unsigned int	cfgr;		/* RCC clock configuration		      */
+	unsigned int	cir;		/* RCC clock interrupt			      */
+#ifndef CONFIG_ARCH_STM32F1
+	unsigned int	ahb1rstr;	/* RCC AHB1 peripheral reset		      */
+	unsigned int	ahb2rstr;	/* RCC AHB2 peripheral reset		      */
+	unsigned int	ahb3rstr;	/* RCC AHB3 peripheral reset		      */
+	unsigned int	rsv0;
+	unsigned int	apb1rstr;	/* RCC APB1 peripheral reset		      */
+	unsigned int	apb2rstr;	/* RCC APB2 peripheral reset		      */
+	unsigned int	rsv1[2];
+#else
+	unsigned int	apb2rstr;	/* RCC APB2 peripheral reset		      */
+	unsigned int	apb1rstr;	/* RCC APB1 peripheral reset		      */
+#endif
+
+	unsigned int	ahb1enr;	/* RCC AHB1 peripheral clock enable	      */
+#ifndef CONFIG_ARCH_STM32F1
+	unsigned int	ahb2enr;	/* RCC AHB2 peripheral clock enable	      */
+	unsigned int	ahb3enr;	/* RCC AHB3 peripheral clock enable	      */
+	unsigned int	rsv2;
+	unsigned int	apb1enr;	/* RCC APB1 peripheral clock enable	      */
+	unsigned int	apb2enr;	/* RCC APB2 peripheral clock enable	      */
+#else
+	unsigned int	apb2enr;	/* RCC APB2 peripheral clock enable	      */
+	unsigned int	apb1enr;	/* RCC APB1 peripheral clock enable	      */
+#endif
+
+#ifndef CONFIG_ARCH_STM32F1
+	unsigned int	rsv3[2];
+	unsigned int	ahb1lpenr;	/* RCC AHB1 periph clk enable in low pwr mode */
+	unsigned int	ahb2lpenr;	/* RCC AHB2 periph clk enable in low pwr mode */
+	unsigned int	ahb3lpenr;	/* RCC AHB3 periph clk enable in low pwr mode */
+	unsigned int	rsv4;
+	unsigned int	apb1lpenr;	/* RCC APB1 periph clk enable in low pwr mode */
+	unsigned int	apb2lpenr;	/* RCC APB2 periph clk enable in low pwr mode */
+	unsigned int	rsv5[2];
+#endif
+	unsigned int	bdcr;		/* RCC Backup domain control		      */
+	unsigned int	csr;		/* RCC clock control & status		      */
+#ifndef CONFIG_ARCH_STM32F1
+	unsigned int	rsv6[2];
+	unsigned int	sscgr;		/* RCC spread spectrum clock generation	      */
+	unsigned int	plli2scfgr;	/* RCC PLLI2S configuration		      */
+#endif
+};
+
 /*
  * GPIO descriptor
  */
 struct stm32f2_gpio_dsc {
-	u32		port;		/* GPIO port			      */
-	u32		pin;		/* GPIO pin		0 ~15	      */
+	unsigned int		port;		/* GPIO port			      */
+	unsigned int		pin;		/* GPIO pin		0 ~15	      */
 };
 //
-int stm32f2_gpio_config(struct stm32f2_gpio_dsc *dsc,
-                               enum stm32f2_gpio_role role);
-int stm32f2_status_gpio_init(void);
-void stm32_led_init(void);
-int  stm32f2_gpout_set(const struct stm32f2_gpio_dsc *dsc,int state);
+#define STATUS_GPIO_NUMBER 7
+
+//------------------------------------
+int stm32f2_gpio_config(struct stm32f2_gpio_dsc *dsc,enum stm32f2_gpio_role role);
+int stm32f2_gpout_set(const struct stm32f2_gpio_dsc *dsc,int state);
 int stm32f2_gpout_toggle(const struct stm32f2_gpio_dsc *dsc);
 int stm32f2_gpio_getValue(const struct stm32f2_gpio_dsc*dsc,
                         enum stm32f2_gpio_role role);
+//------------------------------------
+int stm32f2_status_gpio_init(void);
+int stm32f2_led_init(void);
+int stm32f2_usart_short_loopback_disable(void);
+int stm32f2_tp_sync_ready_init(void);
+
 
 
 #endif// __STM32F4_GPIO_H

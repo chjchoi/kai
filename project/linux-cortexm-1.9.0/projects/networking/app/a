@@ -1,5 +1,9 @@
 #!/bin/sh
-cp *ko /pcShare
-cp dia tty /pcShare
-cp dia2 tty2 /pcShare
+ls /pcShare/app/
+rm /pcShare/app/*.ko /pcShare/app/diaK /pcShare/app/ttyK
+ls /pcShare/app/
+cp ./*ko /pcShare/app/
+cp ./diaK /pcShare/app/
+cp ./ttyK /pcShare/app/
+ls /pcShare/app/
 

@@ -1,2 +1,6 @@
 #!/bin/sh
-cp *.uImage /pcShare
+ls /pcShare/stm32/
+rm /pcShare/stm32/uImage
+ls /pcShare/stm32/
+cp ./networking.uImage /pcShare/stm32/uImage
+ls /pcShare/stm32/

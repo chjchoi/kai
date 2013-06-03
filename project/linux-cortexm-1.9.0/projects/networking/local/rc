@@ -3,11 +3,12 @@ mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 mount -t devpts none /dev/pts
 #NOR
-mount -t jffs2 /dev/mtdblock3 /mnt
-busybox mknod /dev/status_gpio c 240 0
-busybox insmod /mnt/status_gpio.ko
-busybox mknod /dev/nor_led c 241 0
-busybox insmod /mnt/led.ko
+mount -t jffs2 /dev/mtdblock2 /root
+/root/start
+#busybox mknod /dev/status_gpio c 240 0
+#busybox insmod /mnt/status_gpio.ko
+#busybox mknod /dev/nor_led c 241 0
+#busybox insmod /mnt/led.ko
 #mount -t jffs2 /dev/mtdblock2 /
 #chmod 777 /mnt/start.sh
 #chmod 777  start 
