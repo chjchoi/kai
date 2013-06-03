@@ -1,0 +1,6 @@
+#!/bin/sh
+ls /pcShare/uboot/
+rm /pcShare/uboot/u-boot.bin
+ls /pcShare/uboot/
+cp ./u-boot.bin /pcShare/uboot/
+ls /pcShare/uboot/
