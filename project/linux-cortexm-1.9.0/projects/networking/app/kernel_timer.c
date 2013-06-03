@@ -15,7 +15,7 @@
 #include <linux/fcntl.h>
 #include <linux/time.h>
 #include <linux/timer.h>
-#include "timer120HzJob.h"
+//#include "timer120HzJob.h"
 //#define TIME_STEP (1*HZ/120) //1/120 초 
 //#define TIME_STEP (120*HZ/120) //120/120  
 #define TIME_STEP (100*HZ/100) //HZ 100 , so 1초   

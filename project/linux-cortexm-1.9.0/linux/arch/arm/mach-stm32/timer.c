@@ -62,7 +62,7 @@
  * STM32 Timers IRQ numbers
  */
 #define STM32_TIM2_IRQ		28
-
+#define STM32_TIM5_IRQ		50
 /*
  * STM32 Timer reg bases
  */
@@ -135,11 +135,19 @@ struct stm32_tim_regs {
 /*
  * System Tick timer settings
  */
+/*
 #define TICK_TIM_BASE		STM32_TIM2_BASE
 #define TICK_TIM_IRQ		STM32_TIM2_IRQ
 #define TICK_TIM_RCC_RST	STM32_RCC_RST_TIM2
 #define TICK_TIM_RCC_ENR	STM32_RCC_ENR_TIM2
 #define TICK_TIM_RCC_MSK	STM32_RCC_MSK_TIM2
+#define TICK_TIM_CLOCK		CLOCK_PTMR1
+*/
+#define TICK_TIM_BASE		STM32_TIM5_BASE
+#define TICK_TIM_IRQ		STM32_TIM5_IRQ
+#define TICK_TIM_RCC_RST	STM32_RCC_RST_TIM5
+#define TICK_TIM_RCC_ENR	STM32_RCC_ENR_TIM5
+#define TICK_TIM_RCC_MSK	STM32_RCC_MSK_TIM5
 #define TICK_TIM_CLOCK		CLOCK_PTMR1
 
 /*

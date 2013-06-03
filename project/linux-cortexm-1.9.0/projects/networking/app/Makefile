@@ -26,6 +26,7 @@ clean_apps      :
 # you need to build
 obj-m           += timer120.o
 #obj-m		+= kernel_timer.o
+
 timer120-objs := kernel_timer.o timer120HzJob.o stm32f2_gpio_drv.o
 #timer120HzJob-objs :=timer120HzJob.o stm32f2_gpio_drv.o
 #obj-m           += led.o
