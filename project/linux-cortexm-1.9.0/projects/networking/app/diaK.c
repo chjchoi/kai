@@ -36,7 +36,7 @@ extern struct stm32f2_gpio_dsc led2;//PI4
 #define INPUT_SIZE 20
 #define SEND_BUF_SIZE 26
 #define SEND_BUF_SHORT_SIZE 10
-int fd1,fd3,fd5,fd6;
+static int fd1,fd3,fd5,fd6;
 static char ch=0;
 static	int rv=0;
 //----------------------------------------------
@@ -55,6 +55,7 @@ int main(void)
 			{
 				printf("quit!!\n");
 				close_keyboard();
+				close(fd1);close(fd3);close(fd5);close(fd6);
 				return 0;
 			}
 		}
@@ -108,8 +109,8 @@ int Usart_Test_init(void)
 	switch(pid1)
 	{
 		case -1: //fork fail
-			close(fd1);close(fd3);
-			return;
+			close(fd1);close(fd3);close(fd5);close(fd6);
+			return -1;
 		case 0://child
 			execl("/root/ttyK","ttyK","1",0);
 			break;
@@ -128,7 +129,7 @@ int Usart_Test_init(void)
 	switch(pid5)
 	{
 		case -1: //fork fail
-			close(fd5);close(fd6);
+			close(fd1);close(fd3);close(fd5);close(fd6);
 			return -1;
 		case 0://child
 			execl("/root/ttyK","ttyK","5",0);
@@ -223,10 +224,6 @@ int sendUsart(int numN)
 		{
 			goto ERROR;
 		}
-		else
-		{
-			return 0;
-		}	
 		
 	}
 	else 
@@ -254,16 +251,10 @@ int sendUsart(int numN)
 		{
 			goto ERROR;
 		}
-		else
-		{
-			return 0;
-		}
 	}
 	if(rv<0)
 	{
 		printf("write error\n");
-	//	close(fd1);
-	//	close(fd3);
 		return -3;
 	}
 ERROR:
