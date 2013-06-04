@@ -69,7 +69,6 @@ int main(void)
 			}
 		}
 		rv=doJob(ch);
-	//	ch=0x00;
 	}//while
 END:
 	close_keyboard();
@@ -166,50 +165,39 @@ int Usart_Test_init(void)
 int doJob(char ch)
 {
 		int ret=0;
-		int rv=0;	
 	   	switch(ch)// rv=0 .. 1time. else ..
 	    	{
-			case '0':   rv=0; ch=0; return 0;
-			case 'a':   rv=0;do_LED(1,0);break;//led1 on
-			case 'b':   rv=0;do_LED(1,1);break;//led1 off
-			case 'c':   rv=0;do_LED(2,0);break;//led2 on
-			case 'd':   rv=0;do_LED(2,1);break;//led2 off
-			case 'e':   rv=show_DI();break;
+			case '0': ch=0; return 0;
+			case 'a': do_LED(1,0);break;//led1 on
+			case 'b': do_LED(1,1);break;//led1 off
+			case 'c': do_LED(2,0);break;//led2 on
+			case 'd': do_LED(2,1);break;//led2 off
+			case 'e': return(show_DI());//if return value is not 0 forever loop
 			case 'f':              ;break;
 			case 'g':
-			case 'h':   rv=0;nor_Show_Diag_Menu();break;
+			case 'h': nor_Show_Diag_Menu();break;
 			case 'i':             ;break;
 			case 'j':  ret=nor_120();
 				   if(ret<0)
-				   { ch=0;}
-				   else
-				   {
-					rv=1;
-				   }
-				   break;
-			case 'k':             ;break;
-			case 'm':  rv=0;slb=1;nor_Show_Diag_Menu(slb);
-			
-				   break;
-			
-			case 'n':  rv=0;slb=0;nor_Show_Diag_Menu(slb);break;
-			case 'q':  rv=0xFF;goto END;
-			case 'r':  rv=0;tpReady(0);break;
-			case 's':  rv=0;tpReady(1);break;
-	      	        case '1':  rv=0;sendUsart(1);break; 
-			case '2':               ;break;
-			case '3':  rv=0;sendUsart(3);break; 
-			case '4':               ;break;
-			case '5':  rv=0;sendUsart(5);break;
-			case '6':  rv=0;sendUsart(6);break;
+					{ return 0;}
+				   else { return -1;}
+			case 'k': ;break;
+			case 'm': slb=1;nor_Show_Diag_Menu(slb);break;
+			case 'n': ;slb=0;nor_Show_Diag_Menu(slb);break;
+			case 'q':  return 0xFF;
+			case 'r':  tpReady(0);break;
+			case 's':  tpReady(1);break;
+	      	        case '1':  sendUsart(1);break; 
+			case '2':  ;break;
+			case '3':  sendUsart(3);break; 
+			case '4':              ;break;
+			case '5':  sendUsart(5);break;
+			case '6':  sendUsart(6);break;
 			case 'z': return 0xFF;
 			default:
 			break;
 		}
-END:
-		return rv;
-error:
-		return -1;
+		return 0;//1회성 
 }
 //r
 int tpReady(int val)
@@ -235,9 +223,7 @@ int nor_120(void)
 		return -1;
 	}
 			
-//	printf("%d\n",RecTimespec.tv_nsec);
 	return 0;
-//	printf("%d\n",pRecTimespec->tv_nsec);
 }
 int nor_Show_Diag_Menu(int val)
 {
@@ -318,7 +304,9 @@ int sendUsart(int numN)
 		printf("write error\n");
 		return -3;
 	}
+	return 0;
 ERROR:
+	rv =-3;
 	return rv;	
 }
 //-----------------------------
