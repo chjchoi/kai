@@ -9,6 +9,7 @@
 #include <termios.h>
 #include <unistd.h>
 #include "stm32f2_gpio.h"
+#include <time.h>
 static struct termios initial_settings,new_settings;
 static int peek_character =-1;
 void init_keyboard();
@@ -23,7 +24,9 @@ int do_LED(int ledN,int val);
 int show_DI(void);
 int sendUsart(int);
 int etc_init(void);
+int nor_120(void);
 static int slb=1;
+static long ccount=0;
 //
 extern struct stm32f2_gpio_dsc status_ind[];
 extern struct stm32f2_gpio_dsc short_loopback;
@@ -39,9 +42,12 @@ extern struct stm32f2_gpio_dsc led2;//PI4
 static int fd1,fd3,fd5,fd6;
 static char ch=0;
 static	int rv=0;
+static struct timespec  MyTimespec;
+static struct timespec  RecTimespec;
 //----------------------------------------------
 int main(void)
 {
+	struct timespec myTimespec;
 	init_keyboard();
         nor_Show_Diag_Menu(slb);	
 	Usart_Test_init();
@@ -60,7 +66,7 @@ int main(void)
 			}
 		}
 		rv=doJob(ch);
-		ch=0x00;
+	//	ch=0x00;
 	}//while
 END:
 	close_keyboard();
@@ -74,6 +80,10 @@ int etc_init(void)
 	stm32f2_status_gpio_init();
 	stm32f2_tp_sync_ready_init();
 	stm32f2_led_init();
+	MyTimespec.tv_nsec =(long)8333333;
+	MyTimespec.tv_sec=0;
+	RecTimespec.tv_nsec =0;
+	RecTimespec.tv_sec =0;	
 	return 0;
 }
 	
@@ -151,6 +161,7 @@ int Usart_Test_init(void)
 //--------------------------
 int doJob(char ch)
 {
+		int ret=0;
 		int rv=0;	
 	   	switch(ch)// rv=0 .. 1time. else ..
 	    	{
@@ -164,11 +175,20 @@ int doJob(char ch)
 			case 'g':
 			case 'h':   rv=0;nor_Show_Diag_Menu();break;
 			case 'i':             ;break;
-			case 'j':             ;break;
+			case 'j':  ret=nor_120();
+				   if(ret<0)
+				   { ch=0;}
+				   else
+				   {
+					rv=1;
+				   }
+				   break;
 			case 'k':             ;break;
 			case 'm':  rv=0;slb=1;nor_Show_Diag_Menu(slb);break;
 			case 'n':  rv=0;slb=0;nor_Show_Diag_Menu(slb);break;
 			case 'q':  rv=0xFF;goto END;
+			case 'r':  rv=0;tpReady(0);break;
+			case 's':  rv=0;tpReady(1);break;
 	      	        case '1':  rv=0;sendUsart(1);break; 
 			case '2':               ;break;
 			case '3':  rv=0;sendUsart(3);break; 
@@ -184,7 +204,32 @@ END:
 error:
 		return -1;
 }
-//
+//r
+void tpReady(int val)
+{
+	stm32f2_gpout_set(&tp_ready,val);	
+}
+int nor_120(void)
+{
+	int rv;
+	rv=nanosleep(&MyTimespec,&RecTimespec);
+	stm32f2_gpout_toggle(&tp_sync);
+	if(ccount++>700)
+	{
+		ccount=0;
+		printf("quit 120Hz!!");
+		return -1;
+	}	
+	if(rv<0)
+	{
+		printf("error sleep\n");
+		return -1;
+	}
+			
+//	printf("%d\n",RecTimespec.tv_nsec);
+	return 0;
+//	printf("%d\n",pRecTimespec->tv_nsec);
+}
 int nor_Show_Diag_Menu(int val)
 {
 	if(val=1){
@@ -197,6 +242,7 @@ int nor_Show_Diag_Menu(int val)
 	printf("e) show D/I  f) show D/I LB   g) show D/I Mux \n");
 	printf("h) menu      j) 120Hz      k) usart short lb test \n");
 	printf("q) quit\n    m) ttyS0 echo n)ttyS2 echo \n");
+	printf("r) tp_ready on s)tp_ready off \n");
 	printf("1) usart1 test code send,  3) usart3 test code send \n");
 	printf("z) quit\n");
 	return 0;
@@ -306,9 +352,13 @@ int show_DI()
 		}
 		
 	}
+	if(kbhit())
+	{
+		return 0;	
+	}
 	printf("\r");
-Done:
-	return retV;
+	
+	return 1;
 }
 //-----------------------------------
 void init_keyboard()
