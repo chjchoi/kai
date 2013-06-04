@@ -25,8 +25,11 @@ int show_DI(void);
 int sendUsart(int);
 int etc_init(void);
 int nor_120(void);
+int tpReady(int);
+
 static int slb=1;
 static long ccount=0;
+static int shortLoopBack =0;
 //
 extern struct stm32f2_gpio_dsc status_ind[];
 extern struct stm32f2_gpio_dsc short_loopback;
@@ -37,7 +40,7 @@ extern struct stm32f2_gpio_dsc led2;//PI4
 
 //
 #define INPUT_SIZE 20
-#define SEND_BUF_SIZE 26
+#define SEND_BUF_SIZE 25
 #define SEND_BUF_SHORT_SIZE 10
 static int fd1,fd3,fd5,fd6;
 static char ch=0;
@@ -76,9 +79,10 @@ END:
 //-------------------------
 int etc_init(void)
 {
-	stm32f2_usart_short_loopback_disable();
+	stm32f2_usart_short_loopback_disable(shortLoopBack);
 	stm32f2_status_gpio_init();
 	stm32f2_tp_sync_ready_init();
+	stm32f2_gpout_set(&tp_sync,0);
 	stm32f2_led_init();
 	MyTimespec.tv_nsec =(long)8333333;
 	MyTimespec.tv_sec=0;
@@ -122,13 +126,13 @@ int Usart_Test_init(void)
 			close(fd1);close(fd3);close(fd5);close(fd6);
 			return -1;
 		case 0://child
-			execl("/root/ttyK","ttyK","1",0);
+			execl("/mnt/ttyK","ttyK","1",0);
 			break;
 		default:
 			pid3=vfork();
 			if(pid3==0)
 			{
-				execl("/root/ttyK","ttyK","3",0);
+				execl("/mnt/ttyK","ttyK","3",0);
 			}
 			else
 			{
@@ -142,13 +146,13 @@ int Usart_Test_init(void)
 			close(fd1);close(fd3);close(fd5);close(fd6);
 			return -1;
 		case 0://child
-			execl("/root/ttyK","ttyK","5",0);
+			execl("/mnt/ttyK","ttyK","5",0);
 			break;
 		default:
 			pid6=vfork();
 			if(pid6==0)
 			{
-				execl("/root/ttyK","ttyK","6",0);
+				execl("/mnt/ttyK","ttyK","6",0);
 			}
 			else
 			{
@@ -184,7 +188,10 @@ int doJob(char ch)
 				   }
 				   break;
 			case 'k':             ;break;
-			case 'm':  rv=0;slb=1;nor_Show_Diag_Menu(slb);break;
+			case 'm':  rv=0;slb=1;nor_Show_Diag_Menu(slb);
+			
+				   break;
+			
 			case 'n':  rv=0;slb=0;nor_Show_Diag_Menu(slb);break;
 			case 'q':  rv=0xFF;goto END;
 			case 'r':  rv=0;tpReady(0);break;
@@ -193,8 +200,8 @@ int doJob(char ch)
 			case '2':               ;break;
 			case '3':  rv=0;sendUsart(3);break; 
 			case '4':               ;break;
-			case '5':               ;break;
-			case '6':		;break;
+			case '5':  rv=0;sendUsart(5);break;
+			case '6':  rv=0;sendUsart(6);break;
 			case 'z': return 0xFF;
 			default:
 			break;
@@ -205,9 +212,10 @@ error:
 		return -1;
 }
 //r
-void tpReady(int val)
+int tpReady(int val)
 {
 	stm32f2_gpout_set(&tp_ready,val);	
+	return 0;
 }
 int nor_120(void)
 {
@@ -217,6 +225,7 @@ int nor_120(void)
 	if(ccount++>700)
 	{
 		ccount=0;
+		stm32f2_gpout_set(&tp_sync,0);
 		printf("quit 120Hz!!");
 		return -1;
 	}	
@@ -275,28 +284,34 @@ int sendUsart(int numN)
 	else 
 	{
 		
-		for(i=0;i<SEND_BUF_SHORT_SIZE;++i)	
-		{
 			switch(numN)
 			{
 				case 3:
-					rv =write(fd3,&send3Data[i],1);
+					for(i=0;i<SEND_BUF_SHORT_SIZE;++i)	
+					{
+						rv =write(fd3,&send3Data[i],1);
+					}
 					break;
 				case 5:
-					rv =write(fd5,&send5Data[i],1);
+					for(i=0;i<SEND_BUF_SHORT_SIZE;++i)	
+					{
+						rv =write(fd5,&send5Data[i],1);
+					}
 					break;
 			        case 6:	
-					rv =write(fd6,&send6Data[i],1);
+					for(i=0;i<SEND_BUF_SHORT_SIZE;++i)	
+					{
+						rv =write(fd6,&send6Data[i],1);
+					}
 					break;
 				default:
 					return -1;
 			}
 	
-		}
-		if(rv<0)
-		{
-			goto ERROR;
-		}
+			if(rv<0)
+			{
+				goto ERROR;
+			}
 	}
 	if(rv<0)
 	{

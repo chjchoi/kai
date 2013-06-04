@@ -321,10 +321,10 @@ int stm32f2_tp_sync_ready_init(void)
                 return 0;
 }
 
-int stm32f2_usart_short_loopback_disable(void)
+int stm32f2_usart_short_loopback_disable(int val)
 {
                 stm32f2_gpio_config(&short_loopback,STM32F2_GPIO_ROLE_GPOUT);
-                stm32f2_gpout_set(&short_loopback,1);
+                stm32f2_gpout_set(&short_loopback,val);
                 return 0;
 }
 int stm32f2_status_gpio_init(void)

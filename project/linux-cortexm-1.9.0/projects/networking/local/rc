@@ -3,7 +3,7 @@ mount -t proc proc /proc
 mount -t sysfs sysfs /sys
 mount -t devpts none /dev/pts
 #NOR
-mount -t jffs2 /dev/mtdblock2 /root
+mount -t jffs2 /dev/mtdblock2 /mnt
 /root/start
 #busybox mknod /dev/status_gpio c 240 0
 #busybox insmod /mnt/status_gpio.ko

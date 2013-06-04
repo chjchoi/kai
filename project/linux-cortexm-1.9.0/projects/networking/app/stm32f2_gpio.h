@@ -218,7 +218,7 @@ int stm32f2_gpio_getValue(const struct stm32f2_gpio_dsc*dsc,
 //------------------------------------
 int stm32f2_status_gpio_init(void);
 int stm32f2_led_init(void);
-int stm32f2_usart_short_loopback_disable(void);
+int stm32f2_usart_short_loopback_disable(int);
 int stm32f2_tp_sync_ready_init(void);
 
 
