@@ -125,13 +125,13 @@ int Usart_Test_init(void)
 			close(fd1);close(fd3);close(fd5);close(fd6);
 			return -1;
 		case 0://child
-			execl("/mnt/ttyK","ttyK","1",0);
+			execl("./ttyK","ttyK","1",0);
 			break;
 		default:
 			pid3=vfork();
 			if(pid3==0)
 			{
-				execl("/mnt/ttyK","ttyK","3",0);
+				execl("./ttyK","ttyK","3",0);
 			}
 			else
 			{
@@ -145,13 +145,13 @@ int Usart_Test_init(void)
 			close(fd1);close(fd3);close(fd5);close(fd6);
 			return -1;
 		case 0://child
-			execl("/mnt/ttyK","ttyK","5",0);
+			execl("./ttyK","ttyK","5",0);
 			break;
 		default:
 			pid6=vfork();
 			if(pid6==0)
 			{
-				execl("/mnt/ttyK","ttyK","6",0);
+				execl("./ttyK","ttyK","6",0);
 			}
 			else
 			{
