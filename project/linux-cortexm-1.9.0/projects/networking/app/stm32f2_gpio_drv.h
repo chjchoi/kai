@@ -71,16 +71,16 @@
  * GPIO register map
  */
 struct stm32f2_gpio_regs {
-	u32	moder;		/* GPIO port mode			      */
-	u32	otyper;		/* GPIO port output type		      */
-	u32	ospeedr;	/* GPIO port output speed		      */
-	u32	pupdr;		/* GPIO port pull-up/pull-down		      */
-	u32	idr;		/* GPIO port input data			      */
-	u32	odr;		/* GPIO port output data		      */
-	u16	bsrrl;		/* GPIO port bit set/reset low		      */
-	u16	bsrrh;		/* GPIO port bit set/reset high		      */
-	u32	lckr;		/* GPIO port configuration lock		      */
-	u32	afr[2];		/* GPIO alternate function		      */
+	unsigned int	moder;		/* GPIO port mode			      */
+	unsigned int	otyper;		/* GPIO port output type		      */
+	unsigned int	ospeedr;	/* GPIO port output speed		      */
+	unsigned int	pupdr;		/* GPIO port pull-up/pull-down		      */
+	unsigned int	idr;		/* GPIO port input data			      */
+	unsigned int	odr;		/* GPIO port output data		      */
+	unsigned short	bsrrl;		/* GPIO port bit set/reset low		      */
+	unsigned short	bsrrh;		/* GPIO port bit set/reset high		      */
+	unsigned int	lckr;		/* GPIO port configuration lock		      */
+	unsigned int	afr[2];		/* GPIO alternate function		      */
 };
 /*
  * GPIO ports
@@ -141,8 +141,8 @@ enum stm32f2_gpio_role {
  * GPIO descriptor
  */
 struct stm32f2_gpio_dsc {
-	u32		port;		/* GPIO port			      */
-	u32		pin;		/* GPIO pin		0 ~15	      */
+	unsigned int		port;		/* GPIO port			      */
+	unsigned int		pin;		/* GPIO pin		0 ~15	      */
 };
 //
 int stm32f2_gpio_config(struct stm32f2_gpio_dsc *dsc,

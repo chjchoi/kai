@@ -8,7 +8,7 @@
 #define BUFFER_NUM 25
 char x,y;
 int main(int argc,char** argv){
-        int  r_cnt;
+        int  r_cnt=0;
 	int count;
 	int  MODEMFD;
 	char chrs[BUFFER_NUM];
@@ -67,11 +67,12 @@ int main(int argc,char** argv){
 	r_cnt = 0;
         
 	while(1){
-		r_cnt = read(MODEMFD, chrs, 1);
+		r_cnt = read(MODEMFD, &chrs[0], 1);
 		if(r_cnt>=1)
 		{
 			printf("%02x\n",chrs[0]);
 		}
+		r_cnt=0;
 	}
 	
 	exit(0);

@@ -25,17 +25,11 @@ clean_apps      :
 #Edit the line below to modify a set of loadable modules
 # you need to build
 obj-m           += timer120.o
+timer120-objs := tick.o tickJob.o stm32f2_gpio_drv.o
 #obj-m		+= kernel_timer.o
-
-timer120-objs := kernel_timer.o timer120HzJob.o stm32f2_gpio_drv.o
+#timer120-objs := kernel_timer.o 
+#timer120-objs := kernel_timer.o timer120HzJob.o stm32f2_gpio_drv.o
 #timer120HzJob-objs :=timer120HzJob.o stm32f2_gpio_drv.o
-#obj-m           += led.o
-#obj-m           += pg7.o
-# Define dependencies for a particular module
-#stm32f4_status_gpio-y      := stm32f2_gpio.o
-#status_gpio-objs := stm32f4_status_gpio.o stm32f2_gpio.o
-#led-objs := nor_led.o stm32f2_gpio.o
-#pg7-objs := pg7.o stm32f2_gpio.o
 
 # Path to the kernel modules directory in context of which
 # these loadable modules are built

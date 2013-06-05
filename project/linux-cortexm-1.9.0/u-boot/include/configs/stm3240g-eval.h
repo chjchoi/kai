@@ -59,7 +59,7 @@
 /*
  * Monitor prompt
  */
-#define CONFIG_SYS_PROMPT		"NOR-DB_0.1_MII> "
+#define CONFIG_SYS_PROMPT		"NOR-4MB_0.1_REF> "
 
 /*
  * We want to call the CPU specific initialization
@@ -119,7 +119,7 @@
  * Configuration of the external PSRAM memory
  */
 #define CONFIG_NR_DRAM_BANKS		1
-#define CONFIG_SYS_RAM_SIZE		(4 * 1024 * 1024)
+#define CONFIG_SYS_RAM_SIZE		(32 * 1024 * 1024)
 #define CONFIG_SYS_RAM_CS		2
 
 #undef CONFIG_SYS_RAM_BURST
@@ -304,7 +304,7 @@
 	"addip=setenv bootargs ${bootargs} ip=${ipaddr}:${serverip}:${gatewayip}:${netmask}:${hostname}:eth0:off\0"				\
 	"flashaddr=60020000\0"					\
 	"flashboot=run addip;bootm ${flashaddr}\0"		\
-	"ethaddr=C0:B1:3C:88:88:85\0"				\
+	"ethaddr=C0:B1:3C:88:88:87\0"				\
 	"ipaddr=192.168.0.30\0"					\
 	"serverip=192.168.0.3\0"					\
 	"image=stm32/uImage\0"					\

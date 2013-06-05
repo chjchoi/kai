@@ -15,18 +15,17 @@
 #include <linux/fcntl.h>
 #include <linux/time.h>
 #include <linux/timer.h>
-//#include "timer120HzJob.h"
-//#define TIME_STEP (1*HZ/120) //1/120 초 
-//#define TIME_STEP (120*HZ/120) //120/120  
+
 #define TIME_STEP (100*HZ/100) //HZ 100 , so 1초   
 
 typedef struct{
 	struct timer_list timer;
 	unsigned long led;
 } __attribute__ ((packed)) KERNEL_TIMER_MANAGER;
+
 static KERNEL_TIMER_MANAGER *ptrmng =NULL;
 void kerneltimer_timeover(unsigned long arg);
-//
+
 void kerneltimer_registertimer(KERNEL_TIMER_MANAGER * pdata,unsigned long timeover)
 {
 	init_timer(&(pdata->timer));
@@ -35,9 +34,6 @@ void kerneltimer_registertimer(KERNEL_TIMER_MANAGER * pdata,unsigned long timeov
 	pdata->timer.function =  kerneltimer_timeover;
 	add_timer(&(pdata->timer));
 }
-#define d_printk(level, fmt, args...)				\
-	if (kernel_timer_debug >= level) printk(KERN_INFO "%s: " fmt,	\
-					__func__, ## args)
 
 void kerneltimer_timeover(unsigned long arg)
 {
@@ -46,7 +42,6 @@ void kerneltimer_timeover(unsigned long arg)
 	{
 		/*  code here*/
 		//
-		//	timer120HzJob();
 		//
 		kerneltimer_registertimer(pdata,TIME_STEP);
 	}
@@ -71,7 +66,6 @@ void kerneltimer_exit(vodi)
 		del_timer(&(ptrmng->timer));
 		kfree(ptrmng);
 	}
-        // exit 관련 처리
 }
 
 module_init(kerneltimer_init);
