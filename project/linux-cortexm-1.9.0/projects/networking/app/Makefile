@@ -26,6 +26,9 @@ clean_apps      :
 # you need to build
 obj-m           += timer120.o
 timer120-objs := tickJob.o stm32f2_gpio_drv.o tick.o
+obj-m           += tpSync.o
+tpSync-objs  := tp_sync.o stm32f2_gpio_drv.o
+
 
 #obj-m		+= kernel_timer.o
 #timer120-objs := kernel_timer.o 

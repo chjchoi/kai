@@ -26,10 +26,12 @@ int sendUsart(int);
 int etc_init(void);
 int nor_120(void);
 int tpReady(int);
+int doShortTimeJob(void);
 
 static int slb=1;
 static long ccount=0;
 static int shortLoopBack =0;
+static int prev120HzFlag=0;
 //
 extern struct stm32f2_gpio_dsc status_ind[];
 extern struct stm32f2_gpio_dsc short_loopback;
@@ -207,6 +209,37 @@ int tpReady(int val)
 }
 int nor_120(void)
 {
+//tp_sync는 device driver여야 한다.
+	int rv;
+	int now120HzFlag=0;
+	ccount=0;
+	prev120HzFlag=stm32f2_gpio_getValue(&tp_sync,STM32F2_GPIO_ROLE_GPOUT);
+	while(1)
+	{
+		
+			now120HzFlag=stm32f2_gpio_getValue(&tp_sync,STM32F2_GPIO_ROLE_GPOUT);
+			if(now120HzFlag)
+			{
+				printf(".");
+			}
+			else
+			{
+				printf("+");
+			}
+/*
+			if( now120HzFlag!=prev120HzFlag)
+			{
+				prev120HzFlag =now120HzFlag;
+				if(ccount++>700)//700회 만 한다.
+				{
+					doShortTimeJob();
+					return 0;
+				}
+			}
+*/
+	}
+		
+/*
 	int rv;
 	rv=nanosleep(&MyTimespec,&RecTimespec);
 	stm32f2_gpout_toggle(&tp_sync);
@@ -215,6 +248,7 @@ int nor_120(void)
 		ccount=0;
 		stm32f2_gpout_set(&tp_sync,0);
 		printf("quit 120Hz!!");
+
 		return -1;
 	}	
 	if(rv<0)
@@ -224,7 +258,14 @@ int nor_120(void)
 	}
 			
 	return 0;
+*/
 }
+//-----------------------------------------------
+int doShortTimeJob(void)
+{
+	printf(".");
+}
+//------------------------------------------------
 int nor_Show_Diag_Menu(int val)
 {
 	if(val=1){
