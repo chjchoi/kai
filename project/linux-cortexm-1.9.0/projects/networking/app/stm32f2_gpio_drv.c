@@ -52,6 +52,8 @@ struct stm32f2_gpio_dsc status_ind[9] = {
 //led
 	struct stm32f2_gpio_dsc led1={5,10};//PF10
 	struct stm32f2_gpio_dsc led2={8,4};//PI4
+//led
+	struct stm32f2_gpio_dsc tp_sync={8,7};
 /*
  * Register map bases
  */

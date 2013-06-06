@@ -25,7 +25,8 @@ clean_apps      :
 #Edit the line below to modify a set of loadable modules
 # you need to build
 obj-m           += timer120.o
-timer120-objs := tick.o tickJob.o stm32f2_gpio_drv.o
+timer120-objs := tickJob.o stm32f2_gpio_drv.o tick.o
+
 #obj-m		+= kernel_timer.o
 #timer120-objs := kernel_timer.o 
 #timer120-objs := kernel_timer.o timer120HzJob.o stm32f2_gpio_drv.o

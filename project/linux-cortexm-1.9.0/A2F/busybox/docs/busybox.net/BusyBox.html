@@ -114,12 +114,11 @@ been enabled, more detailed usage information will also be available.</p>
 <h1><a name="commands">COMMANDS</a></h1>
 <p>Currently available applets include:</p>
 <pre>
-        [, [[, cat, chmod, chown, cp, cttyhack, date, df, dnsdomainname,
-        echo, flash_eraseall, flashcp, halt, hostname, httpd, hush,
-        ifconfig, init, kill, ln, login, ls, mkdir, mount, mv, netstat,
-        nslookup, ntpd, ping, poweroff, ps, pwd, reboot, rm, route, sh,
-        sleep, telnet, telnetd, test, traceroute, udhcpc, umount, vi, wc,
-        wget</pre>
+        cat, chmod, cp, cttyhack, dd, df, dmesg, fdisk, findfs,
+        flash_eraseall, flash_lock, flash_unlock, flashcp, halt, hush,
+        ifconfig, init, insmod, ls, lsmod, mkdir, mke2fs, mkfs.ext2, mknod,
+        modprobe, mount, mv, pkill, poweroff, printf, ps, reboot, rm, rmdir,
+        rmmod, rx, sh, tftp, tftpd, tty, umount, vi</pre>
 <p>
 </p>
 <hr />
@@ -140,19 +139,6 @@ symbols +-= and one or more of the letters rwxst</p>
 <p>Options:</p>
 <pre>
         -R      Recurse</pre>
-</dd>
-<dt><strong><a name="chown" class="item"><strong>chown</strong></a></strong></dt>
-
-<dd>
-<p>chown [-RhLHP]... OWNER[&lt;.|:&gt;[GROUP]] FILE...</p>
-<p>Change the owner and/or group of each FILE to OWNER and/or GROUP</p>
-<p>Options:</p>
-<pre>
-        -R      Recurse
-        -h      Affect symlinks instead of symlink targets
-        -L      Traverse all symlinks to directories
-        -H      Traverse symlinks on command line only
-        -P      Don't traverse symlinks (default)</pre>
 </dd>
 <dt><strong><a name="cp" class="item"><strong>cp</strong></a></strong></dt>
 
@@ -184,55 +170,72 @@ Starting interactive shell from boot shell script:</p>
 <pre>
         setsid cttyhack sh</pre>
 </dd>
-<dt><strong><a name="date" class="item"><strong>date</strong></a></strong></dt>
+<dt><strong><a name="dd" class="item"><strong>dd</strong></a></strong></dt>
 
 <dd>
-<p>date [OPTIONS] [+FMT] [TIME]</p>
-<p>Display time (using +FMT), or set time</p>
+<p><table cellspacing="0" cellpadding="0"><tr><td>dd [if=FILE] [of=FILE] [ibs=N] [obs=N] [bs=N] [count=N] [skip=N]
+<tr><td><td>[seek=N] [conv=notrunc|noerror|sync|fsync]</table></p>
+<p>Copy a file with converting and formatting</p>
 <p>Options:</p>
 <pre>
-        [-s] TIME       Set time to TIME
-        -u              Work in UTC (don't convert to local time)
-        -R              Output RFC-2822 compliant date string
-        -I[SPEC]        Output ISO-8601 compliant date string
-                        SPEC='date' (default) for date only,
-                        'hours', 'minutes', or 'seconds' for date and
-                        time to the indicated precision
-        -r FILE         Display last modification time of FILE
-        -d TIME         Display TIME, not 'now'
-        -D FMT          Use FMT for -d TIME conversion</pre>
-<p>Recognized TIME formats:</p>
-<pre>
-        hh:mm[:ss]
-        [YYYY.]MM.DD-hh:mm[:ss]
-        YYYY-MM-DD hh:mm[:ss]
-        [[[[[YY]YY]MM]DD]hh]mm[.ss]</pre>
+        if=FILE         Read from FILE instead of stdin
+        of=FILE         Write to FILE instead of stdout
+        bs=N            Read and write N bytes at a time
+        ibs=N           Read N bytes at a time
+        obs=N           Write N bytes at a time
+        count=N         Copy only N input blocks
+        skip=N          Skip N input blocks
+        seek=N          Skip N output blocks
+        conv=notrunc    Don't truncate output file
+        conv=noerror    Continue after read errors
+        conv=sync       Pad blocks with zeros
+        conv=fsync      Physically write data out before finishing</pre>
+<p>Numbers may be suffixed by c (x1), w (x2), b (x512), kD (x1000), k (x1024),
+MD (x1000000), M (x1048576), GD (x1000000000) or G (x1073741824)</p>
 </dd>
 <dt><strong><a name="df" class="item"><strong>df</strong></a></strong></dt>
 
 <dd>
-<p>df [-Pkmhai] [-B SIZE] [FILESYSTEM]...</p>
+<p>df [-Pkai] [-B SIZE] [FILESYSTEM]...</p>
 <p>Print filesystem usage statistics</p>
 <p>Options:</p>
 <pre>
         -P      POSIX output format
         -k      1024-byte blocks (default)
-        -m      1M-byte blocks
-        -h      Human readable (e.g. 1K 243M 2G)
         -a      Show all filesystems
         -i      Inodes
         -B SIZE Blocksize</pre>
 </dd>
-<dt><strong><a name="echo" class="item"><strong>echo</strong></a></strong></dt>
+<dt><strong><a name="dmesg" class="item"><strong>dmesg</strong></a></strong></dt>
 
 <dd>
-<p>echo [-neE] [ARG]...</p>
-<p>Print the specified ARGs to stdout</p>
+<p>dmesg [-c] [-n LEVEL] [-s SIZE]</p>
+<p>Print or control the kernel ring buffer</p>
 <p>Options:</p>
 <pre>
-        -n      Suppress trailing newline
-        -e      Interpret backslash escapes (i.e., \t=tab)
-        -E      Don't interpret backslash escapes (default)</pre>
+        -c              Clear ring buffer after printing
+        -n LEVEL        Set console logging level
+        -s SIZE         Buffer size</pre>
+</dd>
+<dt><strong><a name="fdisk" class="item"><strong>fdisk</strong></a></strong></dt>
+
+<dd>
+<p>fdisk [-ul] [-C CYLINDERS] [-H HEADS] [-S SECTORS] [-b SSZ] DISK</p>
+<p>Change partition table</p>
+<p>Options:</p>
+<pre>
+        -u              Start and End are in sectors (instead of cylinders)
+        -l              Show partition table for each DISK, then exit
+        -b 2048         (for certain MO disks) use 2048-byte sectors
+        -C CYLINDERS    Set number of cylinders/heads/sectors
+        -H HEADS
+        -S SECTORS</pre>
+</dd>
+<dt><strong><a name="findfs" class="item"><strong>findfs</strong></a></strong></dt>
+
+<dd>
+<p>findfs LABEL=label or UUID=uuid</p>
+<p>Find a filesystem device based on a label or UUID</p>
 </dd>
 <dt><strong><a name="flash_eraseall" class="item"><strong>flash_eraseall</strong></a></strong></dt>
 
@@ -243,6 +246,19 @@ Starting interactive shell from boot shell script:</p>
 <pre>
         -j      Format the device for jffs2
         -q      Don't display progress messages</pre>
+</dd>
+<dt><strong><a name="flash_lock" class="item"><strong>flash_lock</strong></a></strong></dt>
+
+<dd>
+<p>flash_lock MTD_DEVICE OFFSET SECTORS</p>
+<p>Lock part or all of an MTD device. If SECTORS is -1, then all sectors
+will be locked, regardless of the value of OFFSET</p>
+</dd>
+<dt><strong><a name="flash_unlock" class="item"><strong>flash_unlock</strong></a></strong></dt>
+
+<dd>
+<p>flash_unlock MTD_DEVICE</p>
+<p>Unlock an MTD device</p>
 </dd>
 <dt><strong><a name="flashcp" class="item"><strong>flashcp</strong></a></strong></dt>
 
@@ -264,36 +280,6 @@ Starting interactive shell from boot shell script:</p>
         -n      No call to sync()
         -f      Force halt (don't go through init)</pre>
 </dd>
-<dt><strong><a name="hostname" class="item"><strong>hostname</strong></a></strong></dt>
-
-<dd>
-<p>hostname [OPTIONS] [HOSTNAME | -F FILE]</p>
-<p>Get or set hostname or DNS domain name</p>
-<p>Options:</p>
-<pre>
-        -s      Short
-        -i      Addresses for the hostname
-        -d      DNS domain name
-        -f      Fully qualified domain name
-        -F FILE Use FILE's content as hostname</pre>
-</dd>
-<dt><strong><a name="httpd" class="item"><strong>httpd</strong></a></strong></dt>
-
-<dd>
-<p>httpd [-ifv[v]] [-c CONFFILE] [-p [IP:]PORT] [-h HOME]
-or httpd -d/-e STRING</p>
-<p>Listen for incoming HTTP requests</p>
-<p>Options:</p>
-<pre>
-        -i              Inetd mode
-        -f              Don't daemonize
-        -v[v]           Verbose
-        -p [IP:]PORT    Bind to ip:port (default *:80)
-        -h HOME         Home directory (default .)
-        -c FILE         Configuration file (default {/etc,HOME}/httpd.conf)
-        -e STRING       HTML encode STRING
-        -d STRING       URL decode STRING</pre>
-</dd>
 <dt><strong><a name="ifconfig" class="item"><strong>ifconfig</strong></a></strong></dt>
 
 <dd>
@@ -303,9 +289,11 @@ or httpd -d/-e STRING</p>
 <pre>
         [[-]broadcast [ADDRESS]] [[-]pointopoint [ADDRESS]]
         [netmask ADDRESS] [dstaddr ADDRESS]
-        [metric NN] [mtu NN]
+        [outfill NN] [keepalive NN]
+        [hw ether ADDRESS] [metric NN] [mtu NN]
         [[-]trailers] [[-]arp] [[-]allmulti]
         [multicast] [[-]promisc] [txqueuelen NN] [[-]dynamic]
+        [mem_start NN] [io_addr NN] [irq NN]
         [up|down] ...</pre>
 </dd>
 <dt><strong><a name="init" class="item"><strong>init</strong></a></strong></dt>
@@ -314,43 +302,16 @@ or httpd -d/-e STRING</p>
 <p>init</p>
 <p>Init is the parent of all processes</p>
 </dd>
-<dt><strong><a name="kill" class="item"><strong>kill</strong></a></strong></dt>
+<dt><strong><a name="insmod" class="item"><strong>insmod</strong></a></strong></dt>
 
 <dd>
-<p>kill [-l] [-SIG] PID...</p>
-<p>Send a signal (default: TERM) to given PIDs</p>
-<p>Options:</p>
-<pre>
-        -l      List all signal names and numbers</pre>
-</dd>
-<dt><strong><a name="ln" class="item"><strong>ln</strong></a></strong></dt>
-
-<dd>
-<p>ln [OPTIONS] TARGET... LINK|DIR</p>
-<p>Create a link LINK or DIR/TARGET to the specified TARGET(s)</p>
-<p>Options:</p>
-<pre>
-        -s      Make symlinks instead of hardlinks
-        -f      Remove existing destinations
-        -n      Don't dereference symlinks - treat like normal file
-        -b      Make a backup of the target (if exists) before link operation
-        -S suf  Use suffix instead of ~ when making backup files</pre>
-</dd>
-<dt><strong><a name="login" class="item"><strong>login</strong></a></strong></dt>
-
-<dd>
-<p>login [-p] [-h HOST] [[-f] USER]</p>
-<p>Begin a new session on the system</p>
-<p>Options:</p>
-<pre>
-        -f      Don't authenticate (user already authenticated)
-        -h      Name of the remote host
-        -p      Preserve environment</pre>
+<p>insmod FILE [symbol=value]...</p>
+<p>Load the specified kernel modules into the kernel</p>
 </dd>
 <dt><strong><a name="ls" class="item"><strong>ls</strong></a></strong></dt>
 
 <dd>
-<p>ls [-1AacCdeFilnpLRrSsTtuvwxXhk] [FILE]...</p>
+<p>ls [-1AacCdeFilnpLRrSstuvxXk] [FILE]...</p>
 <p>List directory contents</p>
 <p>Options:</p>
 <pre>
@@ -371,14 +332,17 @@ or httpd -d/-e STRING</p>
         -r      Sort in reverse order
         -S      Sort by file size
         -s      List the size of each file, in blocks
-        -T N    Assume tabstop every N columns
         -t      With -l: sort by modification time
         -u      With -l: sort by access time
         -v      Sort by version
-        -w N    Assume the terminal is N columns wide
         -x      List by lines
-        -X      Sort by extension
-        -h      List sizes in human readable format (1K 243M 2G)</pre>
+        -X      Sort by extension</pre>
+</dd>
+<dt><strong><a name="lsmod" class="item"><strong>lsmod</strong></a></strong></dt>
+
+<dd>
+<p>lsmod</p>
+<p>List the currently loaded kernel modules</p>
 </dd>
 <dt><strong><a name="mkdir" class="item"><strong>mkdir</strong></a></strong></dt>
 
@@ -390,6 +354,59 @@ or httpd -d/-e STRING</p>
         -m      Mode
         -p      No error if exists; make parent directories as needed</pre>
 </dd>
+<dt><strong><a name="mke2fs" class="item"><strong>mke2fs</strong></a></strong></dt>
+
+<dd>
+<p>mke2fs [-Fn] [-b BLK_SIZE] [-i INODE_RATIO] [-I INODE_SIZE] [-m RESERVED_PERCENT] [-L LABEL] BLOCKDEV [KBYTES]</p>
+<pre>
+        -b BLK_SIZE     Block size, bytes
+        -F              Force
+        -i RATIO        Max number of files is filesystem_size / RATIO
+        -I BYTES        Inode size (min 128)
+        -L LBL          Volume label
+        -m PERCENT      Percent of blocks to reserve for admin
+        -n              Dry run</pre>
+</dd>
+<dt><strong><a name="mkfs_ext2" class="item"><strong>mkfs.ext2</strong></a></strong></dt>
+
+<dd>
+<p>mkfs.ext2 [-Fn] [-b BLK_SIZE] [-i INODE_RATIO] [-I INODE_SIZE] [-m RESERVED_PERCENT] [-L LABEL] BLOCKDEV [KBYTES]</p>
+<pre>
+        -b BLK_SIZE     Block size, bytes
+        -F              Force
+        -i RATIO        Max number of files is filesystem_size / RATIO
+        -I BYTES        Inode size (min 128)
+        -L LBL          Volume label
+        -m PERCENT      Percent of blocks to reserve for admin
+        -n              Dry run</pre>
+</dd>
+<dt><strong><a name="mknod" class="item"><strong>mknod</strong></a></strong></dt>
+
+<dd>
+<p>mknod [OPTIONS] NAME TYPE MAJOR MINOR</p>
+<p>Create a special file (block, character, or pipe)</p>
+<p>Options:</p>
+<pre>
+        -m      Create the special file using the specified mode (default a=rw)
+TYPEs include:</pre>
+<pre>
+        b:      Make a block device
+        c or u: Make a character device
+        p:      Make a named pipe (MAJOR and MINOR are ignored)</pre>
+</dd>
+<dt><strong><a name="modprobe" class="item"><strong>modprobe</strong></a></strong></dt>
+
+<dd>
+<p>modprobe [-alrqvs] MODULE [symbol=value]...</p>
+<p>Options:</p>
+<pre>
+        -a      Load multiple MODULEs
+        -l      List (MODULE is a pattern)
+        -r      Remove MODULE (stacks) or do autoclean
+        -q      Quiet
+        -v      Verbose
+        -s      Log to syslog</pre>
+</dd>
 <dt><strong><a name="mount" class="item"><strong>mount</strong></a></strong></dt>
 
 <dd>
@@ -398,11 +415,13 @@ or httpd -d/-e STRING</p>
 <p>Options:</p>
 <pre>
         -a              Mount all filesystems in fstab
+        -f              Dry run
         -r              Read-only mount
         -w              Read-write mount (default)
         -t FSTYPE       Filesystem type
         -O OPT          Mount only filesystems with option OPT (-a only)
 -o OPT:
+        loop            Ignored (loop devices are autodetected)
         remount         Remount a mounted filesystem, changing flags
         ro/rw           Same as -r/-w</pre>
 <p>There are filesystem-specific -o flags.</p>
@@ -418,64 +437,21 @@ or: mv [OPTIONS] SOURCE... DIRECTORY</p>
         -f      Don't prompt before overwriting
         -i      Interactive, prompt before overwrite</pre>
 </dd>
-<dt><strong><a name="netstat" class="item"><strong>netstat</strong></a></strong></dt>
+<dt><strong><a name="pkill" class="item"><strong>pkill</strong></a></strong></dt>
 
 <dd>
-<p>netstat [-laentuwxrWp]</p>
-<p>Display networking information</p>
+<p>pkill [-l|-SIGNAL] [-fnovx] [-s SID|-P PPID|PATTERN]</p>
+<p>Send a signal to process(es) selected by regex PATTERN</p>
 <p>Options:</p>
 <pre>
-        -l      Display listening server sockets
-        -a      Display all sockets (default: connected)
-        -e      Display other/more information
-        -n      Don't resolve names
-        -t      Tcp sockets
-        -u      Udp sockets
-        -w      Raw sockets
-        -x      Unix sockets
-        -r      Display routing table
-        -W      Display with no column truncation
-        -p      Display PID/Program name for sockets</pre>
-</dd>
-<dt><strong><a name="nslookup" class="item"><strong>nslookup</strong></a></strong></dt>
-
-<dd>
-<p>nslookup [HOST] [SERVER]</p>
-<p>Query the nameserver for the IP address of the given HOST
-optionally using a specified DNS server</p>
-</dd>
-<dt><strong><a name="ntpd" class="item"><strong>ntpd</strong></a></strong></dt>
-
-<dd>
-<p>ntpd [-dnqwl] [-S PROG] [-p PEER]...</p>
-<p>NTP client/server</p>
-<p>Options:</p>
-<pre>
-        -d      Verbose
-        -n      Do not daemonize
-        -q      Quit after clock is set
-        -w      Do not set time (only query peers), implies -n
-        -l      Run as server on port 123
-        -S PROG Run PROG after stepping time, stratum change, and every 11 mins
-        -p PEER Obtain time from PEER (may be repeated)</pre>
-</dd>
-<dt><strong><a name="ping" class="item"><strong>ping</strong></a></strong></dt>
-
-<dd>
-<p>ping [OPTIONS] HOST</p>
-<p>Send ICMP ECHO_REQUEST packets to network hosts</p>
-<p>Options:</p>
-<pre>
-        -4, -6          Force IP or IPv6 name resolution
-        -c CNT          Send only CNT pings
-        -s SIZE         Send SIZE data bytes in packets (default:56)
-        -I IFACE/IP     Use interface or IP address as source
-        -W SEC          Seconds to wait for the first response (default:10)
-                        (after all -c CNT packets are sent)
-        -w SEC          Seconds until ping exits (default:infinite)
-                        (can exit earlier with -c CNT)
-        -q              Quiet, only displays output at start
-                        and when finished</pre>
+        -l      List all signals
+        -f      Match against entire command line
+        -n      Signal the newest process only
+        -o      Signal the oldest process only
+        -v      Negate the match
+        -x      Match whole name (not substring)
+        -s      Match session ID (0 for current)
+        -P      Match parent process ID</pre>
 </dd>
 <dt><strong><a name="poweroff" class="item"><strong>poweroff</strong></a></strong></dt>
 
@@ -488,6 +464,13 @@ optionally using a specified DNS server</p>
         -n      Do not sync
         -f      Force power off (don't go through init)</pre>
 </dd>
+<dt><strong><a name="printf" class="item"><strong>printf</strong></a></strong></dt>
+
+<dd>
+<p>printf FORMAT [ARGUMENT]...</p>
+<p>Format and print ARGUMENT(s) according to FORMAT,
+where FORMAT controls the output exactly as in C printf</p>
+</dd>
 <dt><strong><a name="ps" class="item"><strong>ps</strong></a></strong></dt>
 
 <dd>
@@ -496,12 +479,6 @@ optionally using a specified DNS server</p>
 <p>Options:</p>
 <pre>
         w       Wide output</pre>
-</dd>
-<dt><strong><a name="pwd" class="item"><strong>pwd</strong></a></strong></dt>
-
-<dd>
-<p>pwd</p>
-<p>Print the full filename of the current working directory</p>
 </dd>
 <dt><strong><a name="reboot" class="item"><strong>reboot</strong></a></strong></dt>
 
@@ -525,109 +502,67 @@ optionally using a specified DNS server</p>
         -f      Never prompt
         -R,-r   Recurse</pre>
 </dd>
-<dt><strong><a name="route" class="item"><strong>route</strong></a></strong></dt>
+<dt><strong><a name="rmdir" class="item"><strong>rmdir</strong></a></strong></dt>
 
 <dd>
-<p>route [{add|del|delete}]</p>
-<p>Edit kernel routing tables</p>
+<p>rmdir [OPTIONS] DIRECTORY...</p>
+<p>Remove DIRECTORY if it is empty</p>
 <p>Options:</p>
 <pre>
-        -n      Don't resolve names
-        -e      Display other/more information
-        -A inet Select address family</pre>
+        -p      Include parents</pre>
 </dd>
-<dt><strong><a name="sleep" class="item"><strong>sleep</strong></a></strong></dt>
+<dt><strong><a name="rmmod" class="item"><strong>rmmod</strong></a></strong></dt>
 
 <dd>
-<p>sleep N</p>
-<p>Pause for N seconds</p>
-</dd>
-<dt><strong><a name="telnet" class="item"><strong>telnet</strong></a></strong></dt>
-
-<dd>
-<p>telnet [-a] [-l USER] HOST [PORT]</p>
-<p>Connect to telnet server</p>
+<p>rmmod [OPTIONS] [MODULE]...</p>
+<p>Unload the specified kernel modules from the kernel</p>
 <p>Options:</p>
 <pre>
-        -a      Automatic login with $USER variable
-        -l USER Automatic login as USER</pre>
+        -w      Wait until the module is no longer used
+        -f      Force unloading
+        -a      Remove all unused modules (recursively)</pre>
 </dd>
-<dt><strong><a name="telnetd" class="item"><strong>telnetd</strong></a></strong></dt>
+<dt><strong><a name="rx" class="item"><strong>rx</strong></a></strong></dt>
 
 <dd>
-<p>telnetd [OPTIONS]</p>
-<p>Handle incoming telnet connections</p>
+<p>rx FILE</p>
+<p>Receive a file using the xmodem protocol</p>
+</dd>
+<dt><strong><a name="tftp" class="item"><strong>tftp</strong></a></strong></dt>
+
+<dd>
+<p>tftp [OPTIONS] HOST [PORT]</p>
+<p>Transfer a file from/to tftp server</p>
 <p>Options:</p>
 <pre>
-        -l LOGIN        Exec LOGIN on connect
-        -f ISSUE_FILE   Display ISSUE_FILE instead of /etc/issue
-        -K              Close connection as soon as login exits
-                        (normally wait until all programs close slave pty)
-        -p PORT         Port to listen on
-        -b ADDR[:PORT]  Address to bind to
-        -F              Run in foreground
-        -i              Inetd mode</pre>
+        -l FILE Local FILE
+        -r FILE Remote FILE
+        -g      Get file
+        -p      Put file
+        -b SIZE Transfer blocks of SIZE octets</pre>
 </dd>
-<dt><strong><a name="test" class="item"><strong>test</strong></a></strong></dt>
+<dt><strong><a name="tftpd" class="item"><strong>tftpd</strong></a></strong></dt>
 
 <dd>
-<p>test EXPRESSION ]</p>
-<p>Check file types, compare values etc. Return a 0/1 exit code
-depending on logical value of EXPRESSION</p>
-</dd>
-<dt><strong><a name="traceroute" class="item"><strong>traceroute</strong></a></strong></dt>
-
-<dd>
-<p><table cellspacing="0" cellpadding="0"><tr><td>traceroute [-FIldnrv] [-f 1ST_TTL] [-m MAXTTL] [-p PORT] [-q PROBES]
-<tr><td><td>[-s SRC_IP] [-t TOS] [-w WAIT_SEC] [-g GATEWAY] [-i IFACE]
-<tr><td><td>[-z PAUSE_MSEC] HOST [BYTES]</table></p>
-<p>Trace the route to HOST</p>
+<p>tftpd [-cr] [-u USER] [DIR]</p>
+<p>Transfer a file on tftp client's request</p>
+<p>tftpd should be used as an inetd service.
+tftpd's line for inetd.conf:
+	69 dgram udp nowait root tftpd tftpd /files/to/serve
+It also can be ran from udpsvd:</p>
+<pre>
+        udpsvd -vE 0.0.0.0 69 tftpd /files/to/serve</pre>
 <p>Options:</p>
 <pre>
-        -F      Set the don't fragment bit
-        -I      Use ICMP ECHO instead of UDP datagrams
-        -l      Display the TTL value of the returned packet
-        -d      Set SO_DEBUG options to socket
-        -n      Print numeric addresses
-        -r      Bypass routing tables, send directly to HOST
-        -v      Verbose
-        -m      Max time-to-live (max number of hops)
-        -p      Base UDP port number used in probes
-                (default 33434)
-        -q      Number of probes per TTL (default 3)
-        -s      IP address to use as the source address
-        -t      Type-of-service in probe packets (default 0)
-        -w      Time in seconds to wait for a response (default 3)
-        -g      Loose source route gateway (8 max)</pre>
+        -r      Prohibit upload
+        -c      Allow file creation via upload
+        -u      Access files as USER</pre>
 </dd>
-<dt><strong><a name="udhcpc" class="item"><strong>udhcpc</strong></a></strong></dt>
+<dt><strong><a name="tty" class="item"><strong>tty</strong></a></strong></dt>
 
 <dd>
-<p><table cellspacing="0" cellpadding="0"><tr><td>udhcpc [-fbnqvoCR] [-i IFACE] [-r IP] [-s PROG] [-p PIDFILE]
-<tr><td><td>[-H HOSTNAME] [-c CID] [-V VENDOR] [-O DHCP_OPT]... [-P N]</table></p>
-<pre>
-        -i IFACE        Interface to use (default eth0)
-        -p FILE         Create pidfile
-        -r IP           IP address to request
-        -s PROG         Run PROG at DHCP events (default /usr/share/udhcpc/default.script)
-        -t N            Send up to N discover packets
-        -T N            Pause between packets (default 3 seconds)
-        -A N            Wait N seconds (default 20) after failure
-        -x OPT:VAL      Include option OPT in sent packets
-        -O OPT          Request DHCP option OPT (cumulative)
-        -o              Don't request any options (unless -O is given)
-        -f              Run in foreground
-        -S              Log to syslog too
-        -n              Exit if lease is not obtained
-        -q              Exit after obtaining lease
-        -R              Release IP on exit
-        -P N            Use port N (default 68)
-        -a              Use arping to validate offered address
-        -F NAME         Ask server to update DNS mapping for NAME
-        -H,-h NAME      Send NAME as client hostname (default none)
-        -V VENDOR       Vendor identifier (default 'udhcp VERSION')
-        -c CLIENTID     Client identifier (default own MAC)
-        -C              Don't send client identifier</pre>
+<p>tty</p>
+<p>Print file name of stdin's terminal</p>
 </dd>
 <dt><strong><a name="umount" class="item"><strong>umount</strong></a></strong></dt>
 
@@ -636,9 +571,11 @@ depending on logical value of EXPRESSION</p>
 <p>Unmount file systems</p>
 <p>Options:</p>
 <pre>
+        -a      Unmount all file systems
         -r      Try to remount devices as read-only if mount is busy
         -l      Lazy umount (detach filesystem)
-        -f      Force umount (i.e., unreachable NFS server)</pre>
+        -f      Force umount (i.e., unreachable NFS server)
+        -d      Free loop device if it has been used</pre>
 </dd>
 <dt><strong><a name="vi" class="item"><strong>vi</strong></a></strong></dt>
 
@@ -650,34 +587,6 @@ depending on logical value of EXPRESSION</p>
         -c      Initial command to run ($EXINIT also available)
         -R      Read-only
         -H      Short help regarding available features</pre>
-</dd>
-<dt><strong><a name="wc" class="item"><strong>wc</strong></a></strong></dt>
-
-<dd>
-<p>wc [OPTIONS] [FILE]...</p>
-<p>Print line, word, and byte counts for each FILE (or stdin),
-and a total line if more than one FILE is specified</p>
-<p>Options:</p>
-<pre>
-        -c      Print the byte counts
-        -l      Print the newline counts
-        -L      Print the length of the longest line
-        -w      Print the word counts</pre>
-</dd>
-<dt><strong><a name="wget" class="item"><strong>wget</strong></a></strong></dt>
-
-<dd>
-<p>wget [-csq] [-O FILE] [-Y on/off] [-P DIR] [-U AGENT] URL</p>
-<p>Retrieve files via HTTP or FTP</p>
-<p>Options:</p>
-<pre>
-        -s      Spider mode - only check file existence
-        -c      Continue retrieval of aborted transfer
-        -q      Quiet
-        -P      Set directory prefix to DIR
-        -O FILE Save to FILE ('-' for stdout)
-        -U STR  Use STR for User-Agent header
-        -Y      Use proxy ('on' or 'off')</pre>
 </dd>
 </dl>
 <p>
