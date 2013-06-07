@@ -31,6 +31,7 @@
  * Disable debug messages
  */
 #undef DEBUG
+#define DEBUG
 
 /*
  * This is an ARM Cortex-M4 CPU core. Also use the common Cortex-M3 code.

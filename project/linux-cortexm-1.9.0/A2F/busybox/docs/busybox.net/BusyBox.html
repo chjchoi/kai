@@ -114,11 +114,11 @@ been enabled, more detailed usage information will also be available.</p>
 <h1><a name="commands">COMMANDS</a></h1>
 <p>Currently available applets include:</p>
 <pre>
-        cat, chmod, cp, cttyhack, dd, df, dmesg, fdisk, findfs,
-        flash_eraseall, flash_lock, flash_unlock, flashcp, halt, hush,
-        ifconfig, init, insmod, ls, lsmod, mkdir, mke2fs, mkfs.ext2, mknod,
-        modprobe, mount, mv, pkill, poweroff, printf, ps, reboot, rm, rmdir,
-        rmmod, rx, sh, tftp, tftpd, tty, umount, vi</pre>
+        cat, chmod, cp, cttyhack, dd, df, dmesg, echo, egrep, fdisk, fgrep,
+        flash_eraseall, flash_lock, flash_unlock, flashcp, grep, halt, hush,
+        ifconfig, init, insmod, ln, ls, lsmod, mkdir, mknod, modprobe,
+        mount, mv, ping, pkill, poweroff, printenv, printf, ps, reboot, rm,
+        rmdir, rmmod, rx, sh, stty, telnet, telnetd, tty, umount, vi, wget</pre>
 <p>
 </p>
 <hr />
@@ -217,6 +217,12 @@ MD (x1000000), M (x1048576), GD (x1000000000) or G (x1073741824)</p>
         -n LEVEL        Set console logging level
         -s SIZE         Buffer size</pre>
 </dd>
+<dt><strong><a name="echo" class="item"><strong>echo</strong></a></strong></dt>
+
+<dd>
+<p>echo [ARG]...</p>
+<p>Print the specified ARGs to stdout</p>
+</dd>
 <dt><strong><a name="fdisk" class="item"><strong>fdisk</strong></a></strong></dt>
 
 <dd>
@@ -230,12 +236,6 @@ MD (x1000000), M (x1048576), GD (x1000000000) or G (x1073741824)</p>
         -C CYLINDERS    Set number of cylinders/heads/sectors
         -H HEADS
         -S SECTORS</pre>
-</dd>
-<dt><strong><a name="findfs" class="item"><strong>findfs</strong></a></strong></dt>
-
-<dd>
-<p>findfs LABEL=label or UUID=uuid</p>
-<p>Find a filesystem device based on a label or UUID</p>
 </dd>
 <dt><strong><a name="flash_eraseall" class="item"><strong>flash_eraseall</strong></a></strong></dt>
 
@@ -268,6 +268,35 @@ will be locked, regardless of the value of OFFSET</p>
 <p>Options:</p>
 <pre>
         -v      Verbose</pre>
+</dd>
+<dt><strong><a name="grep" class="item"><strong>grep</strong></a></strong></dt>
+
+<dd>
+<p>grep [-HhnlLoqvsriwFE] [-m N] [-A/B/C N] PATTERN/-e PATTERN.../-f FILE [FILE]...</p>
+<p>Search for PATTERN in FILEs (or stdin)</p>
+<p>Options:</p>
+<pre>
+        -H      Add 'filename:' prefix
+        -h      Do not add 'filename:' prefix
+        -n      Add 'line_no:' prefix
+        -l      Show only names of files that match
+        -L      Show only names of files that don't match
+        -c      Show only count of matching lines
+        -o      Show only the matching part of line
+        -q      Quiet. Return 0 if PATTERN is found, 1 otherwise
+        -v      Select non-matching lines
+        -s      Suppress open and read errors
+        -r      Recurse
+        -i      Ignore case
+        -w      Match whole words only
+        -F      PATTERN is a literal (not regexp)
+        -E      PATTERN is an extended regexp
+        -m N    Match up to N times per file
+        -A N    Print N lines of trailing context
+        -B N    Print N lines of leading context
+        -C N    Same as '-A N -B N'
+        -e PTRN Pattern to match
+        -f FILE Read pattern from file</pre>
 </dd>
 <dt><strong><a name="halt" class="item"><strong>halt</strong></a></strong></dt>
 
@@ -307,6 +336,19 @@ will be locked, regardless of the value of OFFSET</p>
 <dd>
 <p>insmod FILE [symbol=value]...</p>
 <p>Load the specified kernel modules into the kernel</p>
+</dd>
+<dt><strong><a name="ln" class="item"><strong>ln</strong></a></strong></dt>
+
+<dd>
+<p>ln [OPTIONS] TARGET... LINK|DIR</p>
+<p>Create a link LINK or DIR/TARGET to the specified TARGET(s)</p>
+<p>Options:</p>
+<pre>
+        -s      Make symlinks instead of hardlinks
+        -f      Remove existing destinations
+        -n      Don't dereference symlinks - treat like normal file
+        -b      Make a backup of the target (if exists) before link operation
+        -S suf  Use suffix instead of ~ when making backup files</pre>
 </dd>
 <dt><strong><a name="ls" class="item"><strong>ls</strong></a></strong></dt>
 
@@ -353,32 +395,6 @@ will be locked, regardless of the value of OFFSET</p>
 <pre>
         -m      Mode
         -p      No error if exists; make parent directories as needed</pre>
-</dd>
-<dt><strong><a name="mke2fs" class="item"><strong>mke2fs</strong></a></strong></dt>
-
-<dd>
-<p>mke2fs [-Fn] [-b BLK_SIZE] [-i INODE_RATIO] [-I INODE_SIZE] [-m RESERVED_PERCENT] [-L LABEL] BLOCKDEV [KBYTES]</p>
-<pre>
-        -b BLK_SIZE     Block size, bytes
-        -F              Force
-        -i RATIO        Max number of files is filesystem_size / RATIO
-        -I BYTES        Inode size (min 128)
-        -L LBL          Volume label
-        -m PERCENT      Percent of blocks to reserve for admin
-        -n              Dry run</pre>
-</dd>
-<dt><strong><a name="mkfs_ext2" class="item"><strong>mkfs.ext2</strong></a></strong></dt>
-
-<dd>
-<p>mkfs.ext2 [-Fn] [-b BLK_SIZE] [-i INODE_RATIO] [-I INODE_SIZE] [-m RESERVED_PERCENT] [-L LABEL] BLOCKDEV [KBYTES]</p>
-<pre>
-        -b BLK_SIZE     Block size, bytes
-        -F              Force
-        -i RATIO        Max number of files is filesystem_size / RATIO
-        -I BYTES        Inode size (min 128)
-        -L LBL          Volume label
-        -m PERCENT      Percent of blocks to reserve for admin
-        -n              Dry run</pre>
 </dd>
 <dt><strong><a name="mknod" class="item"><strong>mknod</strong></a></strong></dt>
 
@@ -437,6 +453,24 @@ or: mv [OPTIONS] SOURCE... DIRECTORY</p>
         -f      Don't prompt before overwriting
         -i      Interactive, prompt before overwrite</pre>
 </dd>
+<dt><strong><a name="ping" class="item"><strong>ping</strong></a></strong></dt>
+
+<dd>
+<p>ping [OPTIONS] HOST</p>
+<p>Send ICMP ECHO_REQUEST packets to network hosts</p>
+<p>Options:</p>
+<pre>
+        -4, -6          Force IP or IPv6 name resolution
+        -c CNT          Send only CNT pings
+        -s SIZE         Send SIZE data bytes in packets (default:56)
+        -I IFACE/IP     Use interface or IP address as source
+        -W SEC          Seconds to wait for the first response (default:10)
+                        (after all -c CNT packets are sent)
+        -w SEC          Seconds until ping exits (default:infinite)
+                        (can exit earlier with -c CNT)
+        -q              Quiet, only displays output at start
+                        and when finished</pre>
+</dd>
 <dt><strong><a name="pkill" class="item"><strong>pkill</strong></a></strong></dt>
 
 <dd>
@@ -463,6 +497,13 @@ or: mv [OPTIONS] SOURCE... DIRECTORY</p>
         -d      Delay interval for halting
         -n      Do not sync
         -f      Force power off (don't go through init)</pre>
+</dd>
+<dt><strong><a name="printenv" class="item"><strong>printenv</strong></a></strong></dt>
+
+<dd>
+<p>printenv [VARIABLE]...</p>
+<p>Print environment VARIABLEs.
+If no VARIABLE specified, print all.</p>
 </dd>
 <dt><strong><a name="printf" class="item"><strong>printf</strong></a></strong></dt>
 
@@ -528,35 +569,46 @@ where FORMAT controls the output exactly as in C printf</p>
 <p>rx FILE</p>
 <p>Receive a file using the xmodem protocol</p>
 </dd>
-<dt><strong><a name="tftp" class="item"><strong>tftp</strong></a></strong></dt>
+<dt><strong><a name="stty" class="item"><strong>stty</strong></a></strong></dt>
 
 <dd>
-<p>tftp [OPTIONS] HOST [PORT]</p>
-<p>Transfer a file from/to tftp server</p>
+<p>stty [-a|g] [-F DEVICE] [SETTING]...</p>
+<p>Without arguments, prints baud rate, line discipline,
+and deviations from stty sane</p>
 <p>Options:</p>
 <pre>
-        -l FILE Local FILE
-        -r FILE Remote FILE
-        -g      Get file
-        -p      Put file
-        -b SIZE Transfer blocks of SIZE octets</pre>
+        -F DEVICE       Open device instead of stdin
+        -a              Print all current settings in human-readable form
+        -g              Print in stty-readable form
+        [SETTING]       See manpage</pre>
 </dd>
-<dt><strong><a name="tftpd" class="item"><strong>tftpd</strong></a></strong></dt>
+<dt><strong><a name="telnet" class="item"><strong>telnet</strong></a></strong></dt>
 
 <dd>
-<p>tftpd [-cr] [-u USER] [DIR]</p>
-<p>Transfer a file on tftp client's request</p>
-<p>tftpd should be used as an inetd service.
-tftpd's line for inetd.conf:
-	69 dgram udp nowait root tftpd tftpd /files/to/serve
-It also can be ran from udpsvd:</p>
-<pre>
-        udpsvd -vE 0.0.0.0 69 tftpd /files/to/serve</pre>
+<p>telnet [-a] [-l USER] HOST [PORT]</p>
+<p>Connect to telnet server</p>
 <p>Options:</p>
 <pre>
-        -r      Prohibit upload
-        -c      Allow file creation via upload
-        -u      Access files as USER</pre>
+        -a      Automatic login with $USER variable
+        -l USER Automatic login as USER</pre>
+</dd>
+<dt><strong><a name="telnetd" class="item"><strong>telnetd</strong></a></strong></dt>
+
+<dd>
+<p>telnetd [OPTIONS]</p>
+<p>Handle incoming telnet connections</p>
+<p>Options:</p>
+<pre>
+        -l LOGIN        Exec LOGIN on connect
+        -f ISSUE_FILE   Display ISSUE_FILE instead of /etc/issue
+        -K              Close connection as soon as login exits
+                        (normally wait until all programs close slave pty)
+        -p PORT         Port to listen on
+        -b ADDR[:PORT]  Address to bind to
+        -F              Run in foreground
+        -i              Inetd mode
+        -w SEC          Inetd 'wait' mode, linger time SEC
+        -S              Log to syslog (implied by -i or without -F and -w)</pre>
 </dd>
 <dt><strong><a name="tty" class="item"><strong>tty</strong></a></strong></dt>
 
@@ -587,6 +639,21 @@ It also can be ran from udpsvd:</p>
         -c      Initial command to run ($EXINIT also available)
         -R      Read-only
         -H      Short help regarding available features</pre>
+</dd>
+<dt><strong><a name="wget" class="item"><strong>wget</strong></a></strong></dt>
+
+<dd>
+<p>wget [-csq] [-O FILE] [-Y on/off] [-P DIR] [-U AGENT] URL</p>
+<p>Retrieve files via HTTP or FTP</p>
+<p>Options:</p>
+<pre>
+        -s      Spider mode - only check file existence
+        -c      Continue retrieval of aborted transfer
+        -q      Quiet
+        -P      Set directory prefix to DIR
+        -O FILE Save to FILE ('-' for stdout)
+        -U STR  Use STR for User-Agent header
+        -Y      Use proxy ('on' or 'off')</pre>
 </dd>
 </dl>
 <p>

@@ -4,6 +4,12 @@ mount -t sysfs sysfs /sys
 mount -t devpts none /dev/pts
 #NOR
 mount -t jffs2 /dev/mtdblock2 /mnt
+busybox stty -F /dev/ttyS0 cs8 -cstopb -ixon raw ispeed 115200 ospeed 115200
+//busybox stty -F /dev/ttyS1 cs8 -cstopb -ixon raw ispeed 115200 ospeed 115200
+busybox stty -F /dev/ttyS2 cs8 -cstopb -ixon raw ispeed 115200 ospeed 115200
+busybox stty -F /dev/ttyS3 cs8 -cstopb -ixon raw ispeed 115200 ospeed 115200
+busybox stty -F /dev/ttyS4 cs8 -cstopb -ixon raw ispeed 115200 ospeed 115200
+busybox stty -F /dev/ttyS5 cs8 -cstopb -ixon raw ispeed 115200 ospeed 115200
 /root/start
 #busybox mknod /dev/status_gpio c 240 0
 #busybox insmod /mnt/status_gpio.ko

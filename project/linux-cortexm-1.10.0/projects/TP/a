@@ -1,0 +1,6 @@
+#!/bin/sh
+ls /pcShare/stm32/
+rm /pcShare/stm32/uImage
+ls /pcShare/stm32/
+cp ./TP.uImage /pcShare/stm32/uImage
+ls /pcShare/stm32/

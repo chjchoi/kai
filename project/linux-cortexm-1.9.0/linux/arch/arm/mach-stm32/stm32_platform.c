@@ -211,12 +211,12 @@ static void __init stm32_init(void)
 	stm32_flash_init();
 #endif
 
-#if defined(CONFIG_MMC_ARMMMCI)
+//#if defined(CONFIG_MMC_ARMMMCI)
 	/*
 	 * Configure SD card controller
 	 */
-	stm32_sdcard_init();
-#endif /* defined(CONFIG_MMC_ARMMMCI) */
+//	stm32_sdcard_init();
+//#endif /* defined(CONFIG_MMC_ARMMMCI) */
 
 #if defined(CONFIG_RTC_DRV_STM32F2)
 	/*

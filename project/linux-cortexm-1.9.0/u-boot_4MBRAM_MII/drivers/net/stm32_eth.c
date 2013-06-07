@@ -446,7 +446,9 @@ static s32 stm_phy_init(struct stm_eth_dev *mac)
 		goto out;
 	}
 
-ok:
+ok:	
+
+	printf("%s: found PHY id = %#x at addr %#x\n", __func__,mac->phy_id,mac->phy_adr);
 	debug("%s: found PHY id = %#x at addr %#x\n", __func__,
 	      mac->phy_id, mac->phy_adr);
 	rv = 0;
@@ -533,8 +535,14 @@ static s32 stm_phy_link_setup(struct stm_eth_dev *mac)
 	}
 	if (val & PHY_BMSR_AUTN_COMP)
 		printf("completed.\n");
-	else
+	else{
 		printf("timeout.\n");
+		val=0;
+		if(stm_phy_read(mac,17,&val)==0)
+		{
+			printf("0x%x\n",val);
+		}
+	}
 
 	/*
 	 * Get link status

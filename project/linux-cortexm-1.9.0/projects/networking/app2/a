@@ -1,0 +1,9 @@
+#!/bin/sh
+ls /pcShare/app/
+rm /pcShare/app/*.ko /pcShare/app/diaK /pcShare/app/ttyK
+ls /pcShare/app/
+cp ./*ko /pcShare/app/
+cp ./diaK /pcShare/app/
+cp ./ttyK /pcShare/app/
+ls /pcShare/app/
+
